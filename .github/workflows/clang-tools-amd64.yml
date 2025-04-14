@@ -170,7 +170,7 @@ jobs:
         mv clang-query${{ matrix.dotexe }} clang-query-${{ env.suffix }}${{ matrix.dotexe }}
         mv clang-tidy${{ matrix.dotexe }} clang-tidy-${{ env.suffix }}${{ matrix.dotexe }}
         mv clang-apply-replacements${{ matrix.dotexe }} clang-apply-replacements-${{ env.suffix }}${{ matrix.dotexe }}
-        [ -f clangd${{ matrix.dotexe }} ] && mv clangd${{ matrix.dotexe }} clangd-${{ env.suffix }}${{ matrix.dotexe }}
+        [ -f clangd${{ matrix.dotexe }} ] && mv clangd${{ matrix.dotexe }} clangd-${{ env.suffix }}${{ matrix.dotexe }} || true
     - name: create and print sha512sum
       shell: bash
       run: |
@@ -179,13 +179,13 @@ jobs:
         ${{ matrix.shacmd }} clang-query-${{ env.suffix }} > clang-query-${{ env.suffix }}.sha512sum
         ${{ matrix.shacmd }} clang-tidy-${{ env.suffix }} > clang-tidy-${{ env.suffix }}.sha512sum
         ${{ matrix.shacmd }} clang-apply-replacements-${{ env.suffix }} > clang-apply-replacements-${{ env.suffix }}.sha512sum
-        [ -f clangd-${{ env.suffix }} ] && ${{ matrix.shacmd }} clangd-${{ env.suffix }} > clangd-${{ env.suffix }}.sha512sum
+        [ -f clangd-${{ env.suffix }} ] && ${{ matrix.shacmd }} clangd-${{ env.suffix }} > clangd-${{ env.suffix }}.sha512sum || true
         echo "Checksums are: "
         cat clang-format-${{ env.suffix }}.sha512sum
         cat clang-query-${{ env.suffix }}.sha512sum
         cat clang-tidy-${{ env.suffix }}.sha512sum
         cat clang-apply-replacements-${{ env.suffix }}.sha512sum
-        [ -f clangd-${{ env.suffix }} ] && cat clangd-${{ env.suffix }}.sha512sum
+        [ -f clangd-${{ env.suffix }} ] && cat clangd-${{ env.suffix }}.sha512sum || true
     - name: upload artifacts
       uses: actions/upload-artifact@v4
       with:
