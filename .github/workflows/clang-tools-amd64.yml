@@ -61,13 +61,13 @@ jobs:
             bindir: '/build/bin'
             dotexe: ''
             shacmd: 'sha512sum'
-          - os: macosx
-            runner: macos-13
-            os-cmake-args: '-DCMAKE_CXX_FLAGS="-static-libgcc -static-libstdc++ -flto" -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15 ${POSIX_CMAKE_ARGS} ${MACOS_CMAKE_ARGS}'
-            build-args: '-j$(sysctl -n hw.ncpu)'
-            bindir: '/build/bin'
-            dotexe: ''
-            shacmd: 'shasum -a512'
+          # - os: macosx
+          #   runner: macos-13
+          #   os-cmake-args: '-DCMAKE_CXX_FLAGS="-static-libgcc -static-libstdc++ -flto" -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15 ${POSIX_CMAKE_ARGS} ${MACOS_CMAKE_ARGS}'
+          #   build-args: '-j$(sysctl -n hw.ncpu)'
+          #   bindir: '/build/bin'
+          #   dotexe: ''
+          #   shacmd: 'shasum -a512'
           - os: windows
             runner: windows-latest
             os-cmake-args: '-Thost=x64 -DCMAKE_CXX_FLAGS="/MP /std:c++14" -DLLVM_USE_CRT_MINSIZEREL="MT"'
@@ -150,17 +150,17 @@ jobs:
       if: ${{ ( matrix.clang-version == 9 || matrix.clang-version == 10 ) && matrix.os == 'windows' }}
       shell: bash
       run: patch ${{ matrix.release }}/llvm/cmake/config-ix.cmake windows-clang-9-10-trivially-copyable-mismatch.patch
-    - name: patch cmake implicit link libraries on macosx
-      if: ${{ matrix.os == 'macosx' }}
-      shell: bash
-      run: sed -i.backup 's/gcc_eh.\*|/gcc_eh.*|gcc_ext.*|/g' $(find /usr/local/Cellar -name CMakeParseImplicitLinkInfo.cmake)
+    # - name: patch cmake implicit link libraries on macosx
+    #   if: ${{ matrix.os == 'macosx' }}
+    #   shell: bash
+    #   run: sed -i.backup 's/gcc_eh.\*|/gcc_eh.*|gcc_ext.*|/g' $(find /usr/local/Cellar -name CMakeParseImplicitLinkInfo.cmake)
     - name: cmake
       run: cmake -S ${{ matrix.release }}/llvm -B ${{ matrix.release }}/build ${{ env.COMMON_CMAKE_ARGS }} ${{ matrix.os-cmake-args }} ${{ matrix.extra-cmake-args }}
     - name: build
       run: cmake --build ${{ matrix.release }}/build ${{ matrix.build-args }} --target clang-format clang-query clang-tidy clang-apply-replacements
-    - name: print dependencies
-      if: ${{ matrix.os == 'macosx' }}
-      run: otool -L ${{ matrix.release }}/build/bin/clang-format
+    # - name: print dependencies
+    #   if: ${{ matrix.os == 'macosx' }}
+    #   run: otool -L ${{ matrix.release }}/build/bin/clang-format
     - name: rename output binary
       run: |
         cd ${{ matrix.release }}${{ matrix.bindir }}
