@@ -191,7 +191,11 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: clang-tools-${{ matrix.release }}-${{ env.suffix }}
-        path: "${{ matrix.release }}${{ matrix.bindir }}/clang-*-${{ env.suffix }}*"
+        path: |
+          "${{ matrix.release }}${{ matrix.bindir }}/clang-*-${{ env.suffix }}*"
+          "${{ matrix.release }}${{ matrix.bindir }}/clangd-${{ env.suffix }}*"
+        if-no-files-found: ignore
+        compression-level: 9
         retention-days: 1
   draft-release:
     runs-on: ubuntu-22.04
